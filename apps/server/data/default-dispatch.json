@@ -1,0 +1,51 @@
+{
+  "date": "2026-11-20",
+  "source": "default",
+  "worldEvent": {
+    "title": "The Lanterns Burn Low",
+    "summary": "A cold fog has rolled in off the ember marsh and the village lanterns are guttering. Traders are stuck at the east gate, the forge is short on charcoal, and the oracle claims the marsh lights are moving on their own."
+  },
+  "quests": [
+    { "npcId": "innkeeper", "title": "Warm Hearths", "description": "Bring firewood from the farm so the tavern can keep stranded traders warm through the night." },
+    { "npcId": "blacksmith", "title": "Charcoal for the Forge", "description": "Collect charcoal from the burned groves beyond the east gate so the forge can relight the lantern posts." },
+    { "npcId": "oracle", "title": "Follow the Marsh Lights", "description": "Walk past the gate into the ember marsh and find out where the wandering lights are leading." }
+  ],
+  "fallbackLines": {
+    "innkeeper": [
+      "Come in out of the fog, friend. The stew is hot even if the lanterns are not.",
+      "Half the traders in town are sleeping on my benches tonight. Business is good, sleep is not.",
+      "If you are heading to the farm, bring back firewood and your next drink is on the house.",
+      "The fog came in thick at dusk. Nobody remembers it ever smelling of smoke before.",
+      "Keep your voice down near the hearth. The old dog bites anyone who wakes him.",
+      "The oracle drank here last night and would not stop talking about moving lights.",
+      "A room costs two coppers, a story costs nothing. I prefer the stories.",
+      "Mind the east gate. The traders say the marsh path has changed since yesterday."
+    ],
+    "blacksmith": [
+      "No charcoal, no fire. No fire, no lanterns. You see my problem.",
+      "The groves past the east gate burned last summer. The charcoal there is still good.",
+      "I can mend that blade, but not until the forge is roaring again.",
+      "Every lantern post in this village came off my anvil. I will not let them go dark.",
+      "Iron does not care about fog. Bring me fuel and I will show you.",
+      "The traders keep asking for horseshoes. I keep asking for charcoal.",
+      "Strike while it is hot, they say. Right now nothing is hot.",
+      "If you find anything strange out in the marsh, bring it here before the oracle sees it."
+    ],
+    "oracle": [
+      "The marsh lights are not wandering. They are walking somewhere.",
+      "I saw the fog before it arrived. I see something behind it now.",
+      "Count the lanterns on your way past the well. One more goes out each hour.",
+      "Beyond the gate the ground remembers fire. Step where the reeds are green.",
+      "You came here with a question. The answer is waiting past the east gate.",
+      "The stars are hidden tonight, so I read the embers instead.",
+      "Those who help the village tonight will be remembered in tomorrow's tale.",
+      "Follow the lights, but do not let them follow you home."
+    ]
+  },
+  "area": {
+    "theme": "ember marsh",
+    "seed": 20261120,
+    "buildingTypes": ["hut", "shrine", "watchtower", "charcoal kiln", "boathouse"]
+  },
+  "loreMentions": []
+}
