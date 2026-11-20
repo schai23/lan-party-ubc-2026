@@ -92,7 +92,7 @@ Give Grok Bot `<PUBLIC_BASE_URL>` and `GROK_TOKEN`, then set up the three routin
 
 | Device | Commands |
 | --- | --- |
-| Host (Windows, Chrome) | Ollama running with `OLLAMA_ORIGINS=*`. Open `<PUBLIC_BASE_URL>/play?villagers=2500&grid=384x288&targets=8&recomputeMs=250&areaSize=512x384&model=llama3.1:8b` in Chrome, full screen. |
+| Host (Windows, Chrome) | Ollama running with `OLLAMA_ORIGINS=*`. Open `<PUBLIC_BASE_URL>/play?villagers=2500&grid=384x288&targets=8&recomputeMs=250&areaSize=512x384&model=llama3.1:8b&pathfindDeadlineMs=1000` in Chrome, full screen (use the calibrated URL from section 3). |
 | Helper A (M3) | `ollama serve` (or the app), then scan the QR, log in, copy the command shown, which looks like: `pnpm runner --server <PUBLIC_BASE_URL> --token <helperToken> --jobs dialogue,areagen` |
 | Helper B (M2) | Scan the QR, log in, run: `pnpm runner --server <PUBLIC_BASE_URL> --token <helperToken> --jobs pathfind,simtick,areagen` |
 | Phones (optional) | Scan the QR, log in, tap "Use this device as a helper". |
@@ -104,13 +104,18 @@ Each runner prints one line per job (type, compute ms, work units). The host loa
 Goal: unlinked p95 frame time above 50 ms with a visible pause at the gate; linked p95 under 20 ms with a seamless gate. Read the numbers off the load panel (p95 frame time, main-thread job ms).
 
 1. Start unlinked (no runners, or press `L`). Load the default URL. Walk around for 10 s and read p95.
+
+Reference numbers from the build Mac (M-series, not the host): one 8-target flow field pass at 384x288 took 156 to 228 ms and areagen 512x384 took 105 to 337 ms. In headless Chrome, forced local gave p95 about 134 ms and linked gave p95 16.8 ms. The defaults are probably already past the 50 ms target on the host, so step 2 may be a step down.
+
+- If unlinked p95 is far above 50 ms and the game looks like a slideshow rather than a stuttering game, lower the work first: `targets=6`, or `recomputeMs=400`. Aim for roughly 60 to 120 ms p95 with clear hitches.
 2. If unlinked p95 is under 50 ms, raise the per-tick work, one knob at a time:
    - `targets=10` or `12` (flow field cost grows linearly with targets),
    - `grid=448x336` or `512x384` (cost grows with cells),
    - `recomputeMs=150` (more recomputes per second).
 3. Gate pause: press `G` to teleport near the gate, walk east. If the crossing is not a visible pause, raise `areaSize` (`640x480`, then `768x576`). Press `R` to reset the area and try again.
 4. Link both Macs and check linked p95. If linked p95 is above 20 ms, the host is spending too long on rendering or steering: lower `villagers` (for example `2000`), since per-frame steering and drawing always run on the host. Check that `pathfind` shows as offloaded in the panel.
-5. If linked flow fields arrive late (pathfind latency above `recomputeMs` in the panel), raise `recomputeMs` slightly; the router keeps one pathfind in flight and reuses the last fields meanwhile.
+5. Read the "Pathfind round trip" row in the load panel. If the average is above `recomputeMs`, the crowd updates less often (the router keeps one pathfind in flight and reuses the last fields). That is fine visually. If you see pathfind jobs failing over to local (the row counts them), raise `pathfindDeadlineMs` (default 1000) or `recomputeMs`.
+   - Every local fallback is a main-thread stall in linked mode, so this row must show 0 failovers during the demo.
 6. Write the final URL here: `__________________________________________`
 
 ## 4. Demo script (3 minutes)
