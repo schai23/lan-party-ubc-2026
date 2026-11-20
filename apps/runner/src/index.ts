@@ -11,6 +11,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { cpus, homedir, hostname } from 'node:os';
 import { join } from 'node:path';
 import { io } from 'socket.io-client';
+import { NpcMemory } from './memory';
 import { Pool } from './pool';
 
 // ---------- args (tolerates the `--` that pnpm inserts when passing args through) ----------
@@ -61,6 +62,7 @@ const key = loadKey();
 
 // ---------- Ollama detection ----------
 const ollama = new Ollama({ host: cfg.OLLAMA_HOST });
+const memory = new NpcMemory(ollama, cfg.EMBED_MODEL);
 async function detectOllama(): Promise<boolean> {
   try {
     const res = await fetch(`${cfg.OLLAMA_HOST.replace(/\/$/, '')}/api/tags`);
@@ -117,11 +119,12 @@ async function runPathfind(input: PathfindInput): Promise<{ output: PathfindOutp
   return { output, computeMs: performance.now() - t0 };
 }
 
-function systemPrompt(d: DialogueInput): string {
+function systemPrompt(d: DialogueInput, memories: string[] = []): string {
   return [
     `You are the ${d.npcId} of Lanternfall village. ${d.persona}`,
     `Today's world event: ${d.worldEvent}`,
     d.quest ? `Your current quest for travelers: ${d.quest}` : '',
+    memories.length ? `Things you remember from earlier conversations:\n- ${memories.join('\n- ')}` : '',
     'Stay in character. Reply in at most 2 short sentences. No stage directions, no emojis, no lists.',
   ].filter(Boolean).join('\n');
 }
@@ -129,8 +132,9 @@ function systemPrompt(d: DialogueInput): string {
 async function runDialogue(job: Job, emitChunk: (text: string) => void): Promise<{ output: { text: string; model: string }; computeMs: number }> {
   const d = job.input as DialogueInput;
   const t0 = performance.now();
+  const memories = await memory.recall(job.roomCode, d.npcId, d.playerLine);
   const messages = [
-    { role: 'system', content: systemPrompt(d) },
+    { role: 'system', content: systemPrompt(d, memories) },
     ...d.history.slice(-8).map((h) => ({ role: h.role === 'player' ? 'user' : 'assistant', content: h.text })),
     { role: 'user', content: d.playerLine },
   ];
@@ -145,6 +149,7 @@ async function runDialogue(job: Job, emitChunk: (text: string) => void): Promise
     if (buf.length >= 12 || /[.!?,;:]\s*$/.test(buf)) { emitChunk(buf); buf = ''; }
   }
   if (buf) emitChunk(buf);
+  void memory.remember(job.roomCode, d.npcId, d.playerLine, text.trim());
   return { output: { text: text.trim(), model }, computeMs: performance.now() - t0 };
 }
 
