@@ -30,7 +30,9 @@ Fund the treasury: send it a little SOL (`solana transfer <treasury> 0.2 --keypa
 
 ### 1.2 Deploy the program (10 min, needs about 3 devnet SOL on the deployer)
 
-The program ID was generated at build time with `anchor keys sync`; it is in `anchor/PROGRAM_ID.txt` and the deploy keypair is `anchor/target/deploy/sidekick_pay-keypair.json` on the build Mac. Deploy from that Mac (or copy that keypair file) so the ID matches the code.
+The program ID `GDJD4wtm4dU3Zg9gzW2HyTziwswq84yqjCWceLPQEKqs` was generated at build time with `anchor keys sync`; it is in `anchor/PROGRAM_ID.txt` and the deploy keypair is `anchor/target/deploy/sidekick_pay-keypair.json` on the build Mac. Deploy from that Mac (or copy that keypair file) so the ID matches the code.
+
+Back up `anchor/target/deploy/sidekick_pay-keypair.json` now (it is gitignored and exists only on the build Mac). Anchor CLI 1.2.2 is installed via avm on that Mac.
 
 ```bash
 cd anchor
@@ -39,7 +41,7 @@ anchor deploy --provider.cluster devnet --provider.wallet ~/sidekick-settler.jso
 cd ..
 ```
 
-Set in `.env`: `PROGRAM_ID=<anchor/PROGRAM_ID.txt>`, `SOLANA_RPC_URL=<QuickNode devnet HTTP URL>` (or `https://api.devnet.solana.com`), `SOLANA_WS_URL=<QuickNode devnet WSS URL>`.
+Set in `.env`: `PROGRAM_ID=GDJD4wtm4dU3Zg9gzW2HyTziwswq84yqjCWceLPQEKqs` (already in `.env.example`), `SOLANA_RPC_URL=<QuickNode devnet HTTP URL>` (or `https://api.devnet.solana.com`), `SOLANA_WS_URL=<QuickNode devnet WSS URL>`.
 
 Copy the IDL if you rebuilt: `cp anchor/target/idl/sidekick_pay.json apps/server/src/idl/sidekick_pay.json`.
 
@@ -65,7 +67,7 @@ It prints settler and treasury addresses and balances, initializes `Config` if m
 
 1. QuickNode dashboard > Streams > Create Stream.
 2. Network **Solana Devnet**, dataset **Block**, start at the **latest block**.
-3. Filter: paste `streams-filter/filter.js` and replace `REPLACE_WITH_PROGRAM_ID` with the value of `PROGRAM_ID`.
+3. Filter: paste `streams-filter/filter.js`. Its `PROGRAM_ID` constant is pre-filled with `GDJD4wtm4dU3Zg9gzW2HyTziwswq84yqjCWceLPQEKqs`; if you deployed under a different ID, replace it with the value of `PROGRAM_ID` in `.env`.
 4. Destination: Webhook, `POST <PUBLIC_BASE_URL>/webhooks/quicknode`, custom header `x-qn-token: <QUICKNODE_STREAM_TOKEN>`.
 5. Start the stream. After the first `settle`, `/status` shows the settlement within seconds. If nothing appears, check the server log for "unrecognized QuickNode payload"; the raw body is written to `docs/quicknode-sample.json`.
 

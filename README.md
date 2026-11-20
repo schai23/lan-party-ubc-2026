@@ -43,7 +43,7 @@ More detail: [docs/architecture.md](docs/architecture.md), [docs/contracts.md](d
 | | |
 | --- | --- |
 | Program | `sidekick_pay` (Anchor), [anchor/programs/sidekick_pay](anchor/programs/sidekick_pay) |
-| Program ID (devnet) | `PROGRAM_ID_PLACEHOLDER` |
+| Program ID (devnet) | `GDJD4wtm4dU3Zg9gzW2HyTziwswq84yqjCWceLPQEKqs` |
 | USDC mint (Circle devnet) | `4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU` |
 | Sample `settle` tx | TODO (link after the first devnet settlement) |
 
@@ -65,7 +65,7 @@ More detail: [docs/architecture.md](docs/architecture.md), [docs/contracts.md](d
 
 **Why Solana:** helpers earn fractions of a cent per job, many times a minute. That only works with fees and confirmation times small enough to settle in batches every few seconds. Solana gives us that, USDC as a real unit of account, and PDAs that hold each session's budget with no custodian. The server pays every fee, so a helper only needs an address.
 
-Tests: `cd anchor && anchor test` (localnet, mock mint): open, settle twice, close; settle over budget fails; non-settler settle fails.
+Tests: `cd anchor && anchor test --validator legacy` (Anchor 1.2.2, localnet, mock mint): open, settle twice, close; settle over budget fails; non-settler settle fails.
 
 ## QuickNode Streams
 
@@ -116,7 +116,8 @@ Checks that need no keys:
 pnpm test                   # packages/jobs determinism tests
 pnpm -F @sidekick/jobs bench
 pnpm smoke                  # in-process server, fake helper and fake game, one job of each type
-cd anchor && anchor test    # program tests on localnet with a mock mint
+cd anchor && pnpm install --ignore-workspace && anchor test --validator legacy   # program tests, localnet, mock mint
+pnpm e2e:localnet           # server's Solana client + settlement loop + webhook decoder on a local validator (see script header)
 ```
 
 Run a helper laptop: open the QR link from the game, log in, then run the command the page shows:

@@ -6,11 +6,11 @@ transaction touching the `sidekick_pay` program to our webhook. The server then 
 
 ## 1. Insert the program ID
 
-Open `filter.js` and replace `REPLACE_WITH_PROGRAM_ID` with the program ID from
+`filter.js` is pre-filled with `GDJD4wtm4dU3Zg9gzW2HyTziwswq84yqjCWceLPQEKqs`. Check it matches the program ID in
 [`../anchor/PROGRAM_ID.txt`](../anchor/PROGRAM_ID.txt) (also `PROGRAM_ID` in `.env`):
 
 ```js
-const PROGRAM_ID = "<contents of anchor/PROGRAM_ID.txt>";
+const PROGRAM_ID = "GDJD4wtm4dU3Zg9gzW2HyTziwswq84yqjCWceLPQEKqs";
 ```
 
 ## 2. Create the Stream (QuickNode dashboard -> Streams -> Create Stream)
