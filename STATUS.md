@@ -13,6 +13,24 @@ Updated during the build on Nov 20, 2026. Legend: **done** (built and verified w
 | 7 | QuickNode webhook, decoding, filter | done, stubbed until Stream exists | `pnpm e2e:localnet`: real settle tx logs decoded via /dev/replay-tx into `settlements`, `/api/earnings` shows 10 units. filter.js pre-filled with the program ID. Webhook rejects calls without `x-qn-token`; decoding tested with a JobsSettled IDL event; only writer of `settlements` |
 | 8 | Status, admin, dispatch | done | Plain HTML forms, no JS. Dispatch form post returns "Dispatch accepted" and broadcasts `dispatch:update` (smoke) |
 | 9 | Privy | built, untested | Lazy-loaded when `VITE_PRIVY_APP_ID` is set (`@privy-io/react-auth` 2.25, Solana embedded wallet on login). Custodial fallback verified |
-| 10 | P1 items | pending | |
+| 10 | P1 items | partial | NPC memory (nomic-embed-text, top-3 recall) built, untested (no Ollama on build Mac). `pnpm gen:sfx` built, needs ElevenLabs key; until then a WebAudio beep and no ambience. Last-session recap on `/status` done. Visual polish skipped |
 | 11 | Docs | done (draft) | README, architecture, contracts, runbook, Grok Bot routines |
 | 12 | Smoke script | done | `pnpm smoke`: 37 checks pass with an empty `.env` |
+
+## Verification commands (all run with an empty `.env`, last run 09:05 CST)
+
+| Command | Result |
+| --- | --- |
+| `pnpm build` | typecheck of shared, jobs, server, runner + `vite build`: OK |
+| `pnpm test` | 11/11 pass |
+| `pnpm smoke` | 37 checks pass |
+| `pnpm -F @sidekick/jobs bench` | pathfind 153 ms, areagen 161 ms, simtick 2 ms (M-series Mac) |
+| `cd anchor && anchor test --validator legacy` | 4 passing |
+| `pnpm e2e:localnet` (validator running) | open, register, settle, decode, close; settlement loop settles 10 receipts; replay into `settlements`; earnings 10 units |
+| `pnpm check:config` | 0/6 integrations configured, every stub listed |
+
+## Known risks
+
+- Pathfind results are about 1.3 MB of JSON per 8-target pass before compression. On localhost the round trip was about 200 to 330 ms. On venue Wi-Fi through Railway it may be slower; watch the "Pathfind round trip" row and the failover count during calibration.
+- Privy login, ElevenLabs audio and both Ollama paths have not run against real services.
+- The program deploy keypair exists only on the build Mac (`anchor/target/deploy/sidekick_pay-keypair.json`, gitignored).
