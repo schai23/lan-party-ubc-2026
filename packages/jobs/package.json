@@ -1,0 +1,16 @@
+{
+  "name": "@sidekick/jobs",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "exports": { ".": "./src/index.ts" },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "bench": "tsx src/bench.ts"
+  },
+  "dependencies": { "@noble/hashes": "^1.5.0", "@sidekick/shared": "workspace:*" },
+  "devDependencies": { "vitest": "^2.1.5" }
+}
