@@ -417,7 +417,7 @@ ${rooms.map((r) => `<tr><td>${esc(r.code)}</td><td>${esc(r.status)}</td><td>${es
 
   // ---------- static web app with SPA fallback ----------
   const hasDist = existsSync(resolve(WEB_DIST, 'index.html'));
-  if (hasDist) await app.register(fastifyStatic, { root: WEB_DIST, prefix: '/', wildcard: false });
+  if (hasDist) await app.register(fastifyStatic, { root: WEB_DIST, prefix: '/', wildcard: true });
   app.setNotFoundHandler((req, reply) => {
     const path = req.url.split('?')[0];
     if (req.method === 'GET' && (path === '/' || path.startsWith('/play') || path.startsWith('/helper'))) {
