@@ -15,7 +15,8 @@
     "gen:sfx": "tsx scripts/gen-sfx.ts",
     "smoke": "tsx scripts/smoke.ts",
     "check:config": "tsx packages/shared/src/check-config.ts",
-    "test": "pnpm -F @sidekick/jobs test"
+    "test": "pnpm -F @sidekick/jobs test",
+    "e2e:localnet": "tsx scripts/localnet-e2e.ts"
   },
   "devDependencies": {
     "@coral-xyz/anchor": "^0.32.1",
