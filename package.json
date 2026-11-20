@@ -1,0 +1,24 @@
+{
+  "name": "sidekick",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@9.15.9",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "dev": "concurrently -n server,web \"pnpm -F @sidekick/server dev\" \"pnpm -F @sidekick/web dev\"",
+    "build": "pnpm -r --filter ./packages/* typecheck && pnpm -F @sidekick/server typecheck && pnpm -F @sidekick/runner typecheck && pnpm -F @sidekick/web build",
+    "start": "pnpm -F @sidekick/server start",
+    "runner": "pnpm -F @sidekick/runner start",
+    "setup:devnet": "tsx scripts/devnet-setup.ts",
+    "gen:sfx": "tsx scripts/gen-sfx.ts",
+    "smoke": "tsx scripts/smoke.ts",
+    "check:config": "tsx packages/shared/src/check-config.ts",
+    "test": "pnpm -F @sidekick/jobs test"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "@types/node": "^22.9.0"
+  }
+}

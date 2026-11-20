@@ -1,0 +1,16 @@
+node_modules
+dist
+.env
+.env.local
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+apps/server/data/tts-cache
+apps/server/data/*.sqlite*
+.DS_Store
+anchor/target
+anchor/.anchor
+anchor/test-ledger
+anchor/node_modules
+*.log
